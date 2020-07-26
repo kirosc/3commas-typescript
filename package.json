@@ -1,7 +1,7 @@
 {
   "name": "3commas-typescript",
   "version": "1.0.0",
-  "description": "Typescript 3commas API library",
+  "description": "TypeScript 3Commas API client",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
