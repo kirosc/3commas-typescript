@@ -1,5 +1,7 @@
 # 3Commas API Client for TypeScript
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/kirosc/3commas-typescript)
+
 An unofficial 3Commas API wrapper in TypeScript. Check out the offical documentation [here](https://github.com/3commas-io/3commas-official-api-docs).
 
 ## Install
