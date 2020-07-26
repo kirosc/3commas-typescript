@@ -1,7 +1,15 @@
 {
   "name": "3commas-typescript",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript 3Commas API client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kirosc/3commas-typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/kirosc/3commas-typescript/issues"
+  },
+  "homepage": "https://github.com/kirosc/3commas-typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
