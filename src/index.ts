@@ -172,11 +172,11 @@ export class API {
   }
 
   async forceProcessSmartTrade(id: number) {
-    return await this.request('POST', 2, `/smart_trades/${id}/close_by_market`);
+    return await this.request('POST', 2, `/smart_trades/${id}/force_process`);
   }
 
   async setNoteSmartTrade(id: number, note: string) {
-    return await this.request('POST', 2, `/smart_trades/${id}/close_by_market`, {
+    return await this.request('POST', 2, `/smart_trades/${id}/set_note`, {
       note,
     });
   }
