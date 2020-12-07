@@ -1,6 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
 import { APIOptions, SmartTradeParams } from './types/types';
-import qs from 'qs';
 import { sign } from './lib/crypto';
 
 const ENDPOINT = 'https://api.3commas.io';
@@ -19,17 +18,16 @@ export class API {
       baseURL: ENDPOINT,
       timeout: 3000,
       headers: { APIKEY: this.KEY },
-      paramsSerializer: qs.stringify,
     });
     this.axios.interceptors.request.use(
       (config) => {
-        config.params = {
-          ...config.params,
+        config.data = {
+          ...config.data,
           api_key: this.KEY,
           secret: this.SECRETS,
         };
         const url = config.url!.replace(config.baseURL!, '');
-        const message = qs.stringify(config.params);
+        const message = JSON.stringify(config.data);
         config.headers.Signature = sign(this.SECRETS, url, message);
         return config;
       },
@@ -50,7 +48,7 @@ export class API {
         const { data } = await this.axios({
           method,
           url: `${ENDPOINT}${version === 1 ? V1 : V2}${path}`,
-          params,
+          data: params,
         });
         resolve(data);
       } catch (error) {
@@ -80,59 +78,59 @@ export class API {
   }
 
   async getExchange() {
-      return await this.request('GET', 1, '/accounts');
+    return await this.request('GET', 1, '/accounts');
   }
 
   async getMarketList() {
-      return await this.request('GET', 1, '/accounts/market_list');
+    return await this.request('GET', 1, '/accounts/market_list');
   }
 
   async getMarketPairs() {
-      return await this.request('GET', 1, '/accounts/market_pairs');
+    return await this.request('GET', 1, '/accounts/market_pairs');
   }
 
   async getCurrencyRate() {
-      return await this.request('GET', 1, '/accounts/currency_rates');
+    return await this.request('GET', 1, '/accounts/currency_rates');
   }
 
   async getActiveTradeEntities(account_id: number) {
-      return await this.request('GET', 1, `/accounts/${account_id}/active_trading_entities`);
+    return await this.request('GET', 1, `/accounts/${account_id}/active_trading_entities`);
   }
 
   async sellAllToUSD(account_id: number) {
-      return await this.request('POST', 1, `/accounts/${account_id}/sell_all_to_usd`);
+    return await this.request('POST', 1, `/accounts/${account_id}/sell_all_to_usd`);
   }
 
   async sellAllToBTC(account_id: number) {
-      return await this.request('POST', 1, `/accounts/${account_id}/sell_all_to_btc`);
+    return await this.request('POST', 1, `/accounts/${account_id}/sell_all_to_btc`);
   }
 
   async getBalanceChartData(account_id: number, params: any) {
-      return await this.request('GET', 1, `/accounts/${account_id}/balance_chart_data`, params);
+    return await this.request('GET', 1, `/accounts/${account_id}/balance_chart_data`, params);
   }
-  
+
   async loadBalances(account_id: number) {
-      return await this.request('POST', 1, `/accounts/${account_id}/load_balances`);
+    return await this.request('POST', 1, `/accounts/${account_id}/load_balances`);
   }
-  
+
   async renameExchangeAccount(account_id: number, name: string) {
-      return await this.request('POST', 1, `/accounts/${account_id}/rename`, {name});
+    return await this.request('POST', 1, `/accounts/${account_id}/rename`, { name });
   }
 
   async removeExchangeAccount(account_id: number) {
-      return await this.request('POST', 1, `/accounts/${account_id}/remove`);
+    return await this.request('POST', 1, `/accounts/${account_id}/remove`);
   }
 
   async getPieChartData(account_id: number) {
-      return await this.request('POST', 1, `/accounts/${account_id}/pie_chart_data`);
+    return await this.request('POST', 1, `/accounts/${account_id}/pie_chart_data`);
   }
 
   async getAccountTableData(account_id: number) {
-      return await this.request('POST', 1, `/accounts/${account_id}/account_table_data`);
+    return await this.request('POST', 1, `/accounts/${account_id}/account_table_data`);
   }
 
   async getAccountInfo(account_id?: number) {
-      return await this.request('GET', 1, `/accounts/${account_id || 'summary'}`)
+    return await this.request('GET', 1, `/accounts/${account_id || 'summary'}`);
   }
 
   async changeUserMode(mode: 'paper' | 'real') {
@@ -148,15 +146,15 @@ export class API {
   }
 
   async getSmartTrade(id: number) {
-    return await this.request('POST', 2, '/smart_trades', { id });
+    return await this.request('GET', 2, '/smart_trades', { id });
   }
 
   async cancelSmartTrade(id: number) {
     return await this.request('DELETE', 2, '/smart_trades', { id });
   }
 
-  async updateSmartTrade(id: number) {
-    return await this.request('PATCH', 2, '/smart_trades', { id });
+  async updateSmartTrade(id: number, params: any) {
+    return await this.request('PATCH', 2, `/smart_trades/${id}`, params);
   }
 
   async averageSmartTrade(id: number, params: any) {

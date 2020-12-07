@@ -1,6 +1,6 @@
 {
   "name": "3commas-typescript",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "TypeScript 3Commas API client",
   "repository": {
     "type": "git",
@@ -14,7 +14,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/index.ts"
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "publish": "npm run build && npm publish"
   },
   "keywords": [
     "typescript",
@@ -24,13 +25,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/crypto-js": "^3.1.47",
-    "@types/qs": "^6.9.4",
-    "ts-node-dev": "^1.0.0-pre.56",
+    "ts-node-dev": "^1.0.0",
     "typescript": "^3.9.7"
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "crypto-js": "^4.0.0",
-    "qs": "^6.9.4"
+    "crypto-js": "^4.0.0"
   }
 }
