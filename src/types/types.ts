@@ -7,6 +7,7 @@ export interface APIOptions {
 export interface SmartTradeParams {
   account_id: number;
   pair: string;
+  note: string;
   instant?: boolean;
   skip_enter_step?: boolean;
   leverage?: Leverage;
