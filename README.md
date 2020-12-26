@@ -1,5 +1,8 @@
 # 3Commas API Client for TypeScript
 
+![npm](https://img.shields.io/npm/v/3commas-typescript)
+![npm bundle size](https://img.shields.io/bundlephobia/min/3commas-typescript)
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/kirosc/3commas-typescript)
 
 An unofficial 3Commas API wrapper in TypeScript. Check out the offical documentation [here](https://github.com/3commas-io/3commas-official-api-docs).
@@ -94,3 +97,8 @@ forceProcessSmartTrade(id: number)
 
 setNoteSmartTrade(id: number, note: string)
 ```
+
+## Support
+Buy me a coffee
+
+ETH: 0xB6fc1dFABf1244138b048C3F80ba5678d8f6f0CE

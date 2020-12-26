@@ -1,6 +1,6 @@
 {
   "name": "3commas-typescript",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "TypeScript 3Commas API client",
   "repository": {
     "type": "git",
@@ -14,8 +14,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/index.ts",
-    "publish": "npm run build && npm publish"
+    "dev": "ts-node-dev --respawn src/index.ts"
   },
   "keywords": [
     "typescript",
