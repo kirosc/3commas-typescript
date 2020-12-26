@@ -85,12 +85,12 @@ export class API {
     return await this.request('GET', 1, '/accounts/market_list');
   }
 
-  async getMarketPairs() {
-    return await this.request('GET', 1, '/accounts/market_pairs');
+  async getMarketPairs(params: any) {
+    return await this.request('GET', 1, '/accounts/market_pairs', params);
   }
 
-  async getCurrencyRate() {
-    return await this.request('GET', 1, '/accounts/currency_rates');
+  async getCurrencyRate(params: any) {
+    return await this.request('GET', 1, '/accounts/currency_rates', params);
   }
 
   async getActiveTradeEntities(account_id: number) {
@@ -133,6 +133,10 @@ export class API {
     return await this.request('GET', 1, `/accounts/${account_id || 'summary'}`);
   }
 
+  async getLeverageData(account_id: number, pair: string) {
+    return await this.request('GET', 1, `/accounts/${account_id}/leverage_data`, { pair });
+  }
+
   async changeUserMode(mode: 'paper' | 'real') {
     return await this.request('POST', 1, '/users/change_mode', { mode });
   }
@@ -146,11 +150,11 @@ export class API {
   }
 
   async getSmartTrade(id: number) {
-    return await this.request('GET', 2, '/smart_trades', { id });
+    return await this.request('GET', 2, `/smart_trades/${id}`);
   }
 
   async cancelSmartTrade(id: number) {
-    return await this.request('DELETE', 2, '/smart_trades', { id });
+    return await this.request('DELETE', 2, `/smart_trades/${id}`);
   }
 
   async updateSmartTrade(id: number, params: any) {
