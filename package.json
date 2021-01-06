@@ -28,7 +28,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "crypto-js": "^4.0.0"
   }
 }
