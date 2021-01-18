@@ -52,7 +52,11 @@ export class API {
         });
         resolve(data);
       } catch (error) {
-        reject(error.response.data);
+        if (error.response) {
+          reject(error.response.data);
+        } else {
+          reject(error);
+        }
       }
     });
   }
@@ -94,27 +98,50 @@ export class API {
   }
 
   async getActiveTradeEntities(account_id: number) {
-    return await this.request('GET', 1, `/accounts/${account_id}/active_trading_entities`);
+    return await this.request(
+      'GET',
+      1,
+      `/accounts/${account_id}/active_trading_entities`
+    );
   }
 
   async sellAllToUSD(account_id: number) {
-    return await this.request('POST', 1, `/accounts/${account_id}/sell_all_to_usd`);
+    return await this.request(
+      'POST',
+      1,
+      `/accounts/${account_id}/sell_all_to_usd`
+    );
   }
 
   async sellAllToBTC(account_id: number) {
-    return await this.request('POST', 1, `/accounts/${account_id}/sell_all_to_btc`);
+    return await this.request(
+      'POST',
+      1,
+      `/accounts/${account_id}/sell_all_to_btc`
+    );
   }
 
   async getBalanceChartData(account_id: number, params: any) {
-    return await this.request('GET', 1, `/accounts/${account_id}/balance_chart_data`, params);
+    return await this.request(
+      'GET',
+      1,
+      `/accounts/${account_id}/balance_chart_data`,
+      params
+    );
   }
 
   async loadBalances(account_id: number) {
-    return await this.request('POST', 1, `/accounts/${account_id}/load_balances`);
+    return await this.request(
+      'POST',
+      1,
+      `/accounts/${account_id}/load_balances`
+    );
   }
 
   async renameExchangeAccount(account_id: number, name: string) {
-    return await this.request('POST', 1, `/accounts/${account_id}/rename`, { name });
+    return await this.request('POST', 1, `/accounts/${account_id}/rename`, {
+      name,
+    });
   }
 
   async removeExchangeAccount(account_id: number) {
@@ -122,11 +149,19 @@ export class API {
   }
 
   async getPieChartData(account_id: number) {
-    return await this.request('POST', 1, `/accounts/${account_id}/pie_chart_data`);
+    return await this.request(
+      'POST',
+      1,
+      `/accounts/${account_id}/pie_chart_data`
+    );
   }
 
   async getAccountTableData(account_id: number) {
-    return await this.request('POST', 1, `/accounts/${account_id}/account_table_data`);
+    return await this.request(
+      'POST',
+      1,
+      `/accounts/${account_id}/account_table_data`
+    );
   }
 
   async getAccountInfo(account_id?: number) {
@@ -134,7 +169,12 @@ export class API {
   }
 
   async getLeverageData(account_id: number, pair: string) {
-    return await this.request('GET', 1, `/accounts/${account_id}/leverage_data`, { pair });
+    return await this.request(
+      'GET',
+      1,
+      `/accounts/${account_id}/leverage_data`,
+      { pair }
+    );
   }
 
   async changeUserMode(mode: 'paper' | 'real') {
@@ -162,7 +202,12 @@ export class API {
   }
 
   async averageSmartTrade(id: number, params: any) {
-    return await this.request('POST', 2, `/smart_trades/${id}/add_funds`, params);
+    return await this.request(
+      'POST',
+      2,
+      `/smart_trades/${id}/add_funds`,
+      params
+    );
   }
 
   async closeSmartTrade(id: number) {

@@ -99,6 +99,7 @@ setNoteSmartTrade(id: number, note: string)
 ```
 
 ## Support
+
 Buy me a coffee
 
 ETH: 0xB6fc1dFABf1244138b048C3F80ba5678d8f6f0CE
