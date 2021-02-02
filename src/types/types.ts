@@ -1,6 +1,7 @@
 export interface APIOptions {
   key: string;
   secrets: string;
+  timeout?: number;
 }
 
 export interface SmartTradeParams {
