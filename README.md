@@ -108,4 +108,5 @@ setNoteSmartTrade(id: number, note: string)
 Buy me a coffee
 
 ETH: 0xB6fc1dFABf1244138b048C3F80ba5678d8f6f0CE
+
 BAT: 0x336bFB8247640C0848F8aFFB80464f3fF489B888
