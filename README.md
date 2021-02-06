@@ -21,7 +21,7 @@ import { API } from '3commas-typescript';
 const api = new API({
   key: 'YOUR_KEY',
   secrets: 'YOUR_SECRETS',
-  timeout: 10000, // Optional, in ms, default to 6000
+  timeout: 60000, // Optional, in ms, default to 30000
 });
 ```
 
