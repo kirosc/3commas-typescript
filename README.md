@@ -82,7 +82,7 @@ changeUserMode(mode: 'paper' | 'real')
 ### Smart Trade
 
 ```ts
-getSmartTradeHistory(params?: any)
+getSmartTradeHistory(params?: SmartTradeHistoryParams)
 
 smartTrade(params: SmartTradeParams)
 

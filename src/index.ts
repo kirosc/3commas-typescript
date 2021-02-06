@@ -2,6 +2,7 @@ import Axios, { AxiosInstance } from 'axios';
 import qs from 'qs';
 import {
   APIOptions,
+  SmartTradeHistoryParams,
   SmartTradeParams,
   TransferHistoryParams,
   TransferParams,
@@ -211,7 +212,7 @@ export class API {
     return await this.request('POST', 1, '/users/change_mode', { mode });
   }
 
-  async getSmartTradeHistory(params?: any) {
+  async getSmartTradeHistory(params?: SmartTradeHistoryParams) {
     return await this.request('GET', 2, '/smart_trades', params);
   }
 
