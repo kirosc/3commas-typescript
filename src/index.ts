@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import qs from 'qs';
 import { APIOptions, SmartTradeParams } from './types/types';
 import { sign } from './lib/crypto';
 
@@ -16,20 +17,35 @@ export class API {
     this.SECRETS = options.secrets;
     this.axios = Axios.create({
       baseURL: ENDPOINT,
-      timeout: options.timeout ?? 6000,
+      timeout: options.timeout ?? 30000,
       headers: { APIKEY: this.KEY },
     });
     this.axios.interceptors.request.use(
       (config) => {
-        config.data = {
+        let data = {
           ...config.data,
           api_key: this.KEY,
           secret: this.SECRETS,
         };
-        const url = config.url!.replace(config.baseURL!, '');
-        const message = JSON.stringify(config.data);
-        config.headers.Signature = sign(this.SECRETS, url, message);
-        return config;
+        let payload = JSON.stringify(data);
+
+        if (config.method === 'get') {
+          payload = qs.stringify(config.params);
+          data = null;
+        }
+
+        const relativeUrl = config.url!.replace(config.baseURL!, '');
+        const signature = sign(this.SECRETS, relativeUrl, payload);
+        const newConfig = {
+          ...config,
+          data,
+          headers: {
+            ...config.headers,
+            signature,
+          },
+        };
+
+        return newConfig;
       },
       (error) => {
         return Promise.reject(error);
@@ -41,14 +57,15 @@ export class API {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     version: 1 | 2,
     path: string,
-    params?: any
+    payload?: any
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const { data } = await this.axios({
           method,
           url: `${ENDPOINT}${version === 1 ? V1 : V2}${path}`,
-          data: params,
+          params: method === 'GET' ? payload : undefined,
+          data: method !== 'GET' ? payload : undefined,
         });
         resolve(data);
       } catch (error) {
