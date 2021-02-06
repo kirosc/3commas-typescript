@@ -61,6 +61,14 @@ export class API {
     });
   }
 
+  async ping() {
+    return await this.request('GET', 1, '/ping');
+  }
+
+  async time() {
+    return await this.request('GET', 1, '/time');
+  }
+
   async transfer(params: any) {
     return await this.request('POST', 1, '/accounts/transfer', params);
   }
