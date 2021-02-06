@@ -1,6 +1,11 @@
 import Axios, { AxiosInstance } from 'axios';
 import qs from 'qs';
-import { APIOptions, SmartTradeParams } from './types/types';
+import {
+  APIOptions,
+  SmartTradeParams,
+  TransferHistoryParams,
+  TransferParams,
+} from './types/types';
 import { sign } from './lib/crypto';
 
 const ENDPOINT = 'https://api.3commas.io';
@@ -86,11 +91,11 @@ export class API {
     return await this.request('GET', 1, '/time');
   }
 
-  async transfer(params: any) {
+  async transfer(params: TransferParams) {
     return await this.request('POST', 1, '/accounts/transfer', params);
   }
 
-  async getTransferHistory(params: any) {
+  async getTransferHistory(params: TransferHistoryParams) {
     return await this.request('GET', 1, '/accounts/transfer_history', params);
   }
 
@@ -114,7 +119,7 @@ export class API {
     return await this.request('GET', 1, '/accounts/market_list');
   }
 
-  async getMarketPairs(params: any) {
+  async getMarketPairs(params?: any) {
     return await this.request('GET', 1, '/accounts/market_pairs', params);
   }
 
@@ -122,7 +127,7 @@ export class API {
     return await this.request('GET', 1, '/accounts/currency_rates', params);
   }
 
-  async getActiveTradeEntities(account_id: number) {
+  async getActiveTradeEntities(account_id: number | string) {
     return await this.request(
       'GET',
       1,
@@ -130,7 +135,7 @@ export class API {
     );
   }
 
-  async sellAllToUSD(account_id: number) {
+  async sellAllToUSD(account_id: number | string) {
     return await this.request(
       'POST',
       1,
@@ -138,7 +143,7 @@ export class API {
     );
   }
 
-  async sellAllToBTC(account_id: number) {
+  async sellAllToBTC(account_id: number | string) {
     return await this.request(
       'POST',
       1,
@@ -146,7 +151,7 @@ export class API {
     );
   }
 
-  async getBalanceChartData(account_id: number, params: any) {
+  async getBalanceChartData(account_id: number | string, params: any) {
     return await this.request(
       'GET',
       1,
@@ -155,7 +160,7 @@ export class API {
     );
   }
 
-  async loadBalances(account_id: number) {
+  async loadBalances(account_id: number | string) {
     return await this.request(
       'POST',
       1,
@@ -163,17 +168,17 @@ export class API {
     );
   }
 
-  async renameExchangeAccount(account_id: number, name: string) {
+  async renameExchangeAccount(account_id: number | string, name: string) {
     return await this.request('POST', 1, `/accounts/${account_id}/rename`, {
       name,
     });
   }
 
-  async removeExchangeAccount(account_id: number) {
+  async removeExchangeAccount(account_id: number | string) {
     return await this.request('POST', 1, `/accounts/${account_id}/remove`);
   }
 
-  async getPieChartData(account_id: number) {
+  async getPieChartData(account_id: number | string) {
     return await this.request(
       'POST',
       1,
@@ -181,7 +186,7 @@ export class API {
     );
   }
 
-  async getAccountTableData(account_id: number) {
+  async getAccountTableData(account_id: number | string) {
     return await this.request(
       'POST',
       1,
@@ -190,10 +195,10 @@ export class API {
   }
 
   async getAccountInfo(account_id?: number) {
-    return await this.request('GET', 1, `/accounts/${account_id || 'summary'}`);
+    return await this.request('GET', 1, `/accounts/${account_id ?? 'summary'}`);
   }
 
-  async getLeverageData(account_id: number, pair: string) {
+  async getLeverageData(account_id: number | string, pair: string) {
     return await this.request(
       'GET',
       1,
@@ -206,7 +211,7 @@ export class API {
     return await this.request('POST', 1, '/users/change_mode', { mode });
   }
 
-  async getSmartTradeHistory(params: any) {
+  async getSmartTradeHistory(params?: any) {
     return await this.request('GET', 2, '/smart_trades', params);
   }
 

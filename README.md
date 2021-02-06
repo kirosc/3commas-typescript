@@ -30,9 +30,13 @@ const api = new API({
 ### Account
 
 ```ts
-transfer(params: any)
+ping()
 
-getTransferHistory(params: any)
+time()
+
+transfer(params: TransferParams)
+
+getTransferHistory(params: TransferHistoryParams)
 
 getTransferData()
 
@@ -44,9 +48,9 @@ getExchange()
 
 getMarketList()
 
-getMarketPairs()
+getMarketPairs(params?: any)
 
-getCurrencyRate()
+getCurrencyRate(params: any)
 
 getActiveTradeEntities(account_id: number)
 
@@ -78,7 +82,7 @@ changeUserMode(mode: 'paper' | 'real')
 ### Smart Trade
 
 ```ts
-getSmartTradeHistory(params: any)
+getSmartTradeHistory(params?: any)
 
 smartTrade(params: SmartTradeParams)
 
@@ -104,3 +108,4 @@ setNoteSmartTrade(id: number, note: string)
 Buy me a coffee
 
 ETH: 0xB6fc1dFABf1244138b048C3F80ba5678d8f6f0CE
+BAT: 0x336bFB8247640C0848F8aFFB80464f3fF489B888

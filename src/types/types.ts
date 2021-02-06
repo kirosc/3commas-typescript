@@ -4,6 +4,36 @@ export interface APIOptions {
   timeout?: number;
 }
 
+export interface TransferParams {
+  currency: string;
+  amount: number | string;
+  from_account_id: number | string;
+  to_account_id: number | string;
+}
+
+export interface TransferHistoryParams {
+  account_id: number | string;
+  currency: string;
+  page?: number | string;
+  per_page?: number | string;
+}
+
+export interface SmartTradeHistoryParams {
+  account_id?: number | string;
+  pair?: string;
+  type?:
+    | 'simple_buy'
+    | 'simple_sell'
+    | 'smart_sell'
+    | 'smart_trade'
+    | 'smart_cover';
+  page?: number | string;
+  per_page?: number | string;
+  status?: 'all' | 'active' | 'finished' | 'cancelled' | 'failed';
+  order_by?: 'created_at' | 'updated_at' | 'closed_at' | 'status';
+  order_direction?: 'asc' | 'desc';
+}
+
 export interface SmartTradeParams {
   account_id: number;
   pair: string;
