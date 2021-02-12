@@ -1,9 +1,10 @@
-import Axios, { AxiosInstance } from 'axios';
+import Axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
 import {
   APIOptions,
   SmartTradeHistoryParams,
   SmartTradeParams,
+  ThreeCommasError,
   TransferHistoryParams,
   TransferParams,
 } from './types/types';
@@ -16,11 +17,16 @@ const V2 = '/public/api/v2';
 export class API {
   private readonly KEY: string;
   private readonly SECRETS: string;
+  private readonly errorHandler?: (
+    response: ThreeCommasError,
+    reject: (reason?: any) => void
+  ) => void | Promise<any>;
   private axios: AxiosInstance;
 
   constructor(options: APIOptions) {
     this.KEY = options.key;
     this.SECRETS = options.secrets;
+    this.errorHandler = options?.errorHandler;
     this.axios = Axios.create({
       baseURL: ENDPOINT,
       timeout: options.timeout ?? 30000,
@@ -74,12 +80,12 @@ export class API {
           data: method !== 'GET' ? payload : undefined,
         });
         resolve(data);
-      } catch (error) {
-        if (error.response) {
-          reject(error.response.data);
-        } else {
-          reject(error);
+      } catch (e) {
+        const error = e as AxiosError<ThreeCommasError>;
+        if (error.response?.data && this.errorHandler) {
+          await this.errorHandler(error.response.data, reject);
         }
+        reject(error.response?.data ?? error);
       }
     });
   }

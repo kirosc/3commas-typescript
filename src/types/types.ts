@@ -2,6 +2,18 @@ export interface APIOptions {
   key: string;
   secrets: string;
   timeout?: number;
+  errorHandler?: (
+    response: ThreeCommasError,
+    reject: (reason?: any) => void
+  ) => void | Promise<any>;
+}
+
+export interface ThreeCommasError {
+  error: string;
+  error_description?: string;
+  error_attributes?: {
+    [key: string]: string;
+  };
 }
 
 export interface TransferParams {

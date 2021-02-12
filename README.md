@@ -22,6 +22,11 @@ const api = new API({
   key: 'YOUR_KEY',
   secrets: 'YOUR_SECRETS',
   timeout: 60000, // Optional, in ms, default to 30000
+  errorHandler: (response, reject) => {
+    // Optional, Custom handler for 3Commas error
+    const { error, error_description } = response;
+    reject(new Error(error_description ?? error));
+  },
 });
 ```
 
