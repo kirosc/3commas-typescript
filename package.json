@@ -1,6 +1,6 @@
 {
   "name": "3commas-typescript",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "TypeScript 3Commas API client",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "@types/qs": "^6.9.5",
     "prettier": "^2.2.1",
     "ts-node-dev": "^1.1.1",
-    "typescript": "^4.1.3"
+    "typescript": "^4.1.5"
   },
   "dependencies": {
     "axios": "^0.21.1",
