@@ -108,6 +108,22 @@ forceProcessSmartTrade(id: number)
 setNoteSmartTrade(id: number, note: string)
 ```
 
+## Response Type
+
+The Order type returned by smart trade endpoint is generated using [quicktype](https://github.com/quicktype/quicktype).
+
+The type correctness isn't guaranteed. You can perform a type check before access.
+
+```ts
+try {
+  const order = await api.getSmartTrade(1234567)
+  const validatedOrder = api.validateOrderType(order)
+  ...
+} catch (error) {
+  console.error(error)
+}
+```
+
 ## Support
 
 Buy me a coffee

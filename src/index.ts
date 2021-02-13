@@ -9,6 +9,7 @@ import {
   TransferParams,
 } from './types/types';
 import { sign } from './lib/crypto';
+import { Convert, Order } from './types/generated-types';
 
 const ENDPOINT = 'https://api.3commas.io';
 const V1 = '/public/api/ver1';
@@ -218,27 +219,29 @@ export class API {
     return await this.request('POST', 1, '/users/change_mode', { mode });
   }
 
-  async getSmartTradeHistory(params?: SmartTradeHistoryParams) {
+  async getSmartTradeHistory(
+    params?: SmartTradeHistoryParams
+  ): Promise<Order[]> {
     return await this.request('GET', 2, '/smart_trades', params);
   }
 
-  async smartTrade(params: SmartTradeParams) {
+  async smartTrade(params: SmartTradeParams): Promise<Order> {
     return await this.request('POST', 2, '/smart_trades', params);
   }
 
-  async getSmartTrade(id: number) {
+  async getSmartTrade(id: number): Promise<Order> {
     return await this.request('GET', 2, `/smart_trades/${id}`);
   }
 
-  async cancelSmartTrade(id: number) {
+  async cancelSmartTrade(id: number): Promise<Order> {
     return await this.request('DELETE', 2, `/smart_trades/${id}`);
   }
 
-  async updateSmartTrade(id: number, params: any) {
+  async updateSmartTrade(id: number, params: any): Promise<Order> {
     return await this.request('PATCH', 2, `/smart_trades/${id}`, params);
   }
 
-  async averageSmartTrade(id: number, params: any) {
+  async averageSmartTrade(id: number, params: any): Promise<Order> {
     return await this.request(
       'POST',
       2,
@@ -247,21 +250,31 @@ export class API {
     );
   }
 
-  async closeSmartTrade(id: number) {
+  async closeSmartTrade(id: number): Promise<Order> {
     return await this.request('POST', 2, `/smart_trades/${id}/close_by_market`);
   }
 
-  async forceStartSmartTrade(id: number) {
+  async forceStartSmartTrade(id: number): Promise<Order> {
     return await this.request('POST', 2, `/smart_trades/${id}/force_start`);
   }
 
-  async forceProcessSmartTrade(id: number) {
+  async forceProcessSmartTrade(id: number): Promise<Order> {
     return await this.request('POST', 2, `/smart_trades/${id}/force_process`);
   }
 
-  async setNoteSmartTrade(id: number, note: string) {
+  async setNoteSmartTrade(id: number, note: string): Promise<Order> {
     return await this.request('POST', 2, `/smart_trades/${id}/set_note`, {
       note,
     });
+  }
+
+  /**
+   * Validate the response order is consistent with the generated type
+   * Or, an error is thrown
+   *
+   * @param order order
+   */
+  validateOrderType(order: Order) {
+    return Convert.toOrder(JSON.stringify(order));
   }
 }
