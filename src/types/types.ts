@@ -54,8 +54,8 @@ export interface SmartTradeParams {
   skip_enter_step?: boolean;
   leverage?: Leverage;
   position: Position;
-  take_profit: TakeProfit;
-  stop_loss: StopLoss;
+  take_profit?: TakeProfit;
+  stop_loss?: StopLoss;
 }
 
 export interface Leverage {
