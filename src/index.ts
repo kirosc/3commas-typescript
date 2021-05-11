@@ -268,6 +268,10 @@ export class API {
     });
   }
 
+  async getBots() {
+    return await this.request('GET', 1, '/bots');
+  }
+
   /**
    * Validate the response order is consistent with the generated type
    * Or, an error is thrown
