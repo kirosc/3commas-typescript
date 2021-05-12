@@ -268,6 +268,41 @@ export class API {
     });
   }
 
+  async getBots() {
+    return await this.request('GET', 1, '/bots');
+  }
+
+  async getBotsStats() {
+    return await this.request('GET', 1, '/bots/stats');
+  }
+
+  async getDeals(
+    limit: number = 50,
+    offset: number = 0,
+    scope: string = 'completed',
+    order:
+      | 'created_at'
+      | 'updated_at'
+      | 'closed_at'
+      | 'profit'
+      | 'profit_percentage' = 'created_at',
+    orderDirection: 'asc' | 'desc' = 'desc',
+    botId?: string
+  ) {
+    const params = {
+      limit,
+      offset,
+      scope,
+      order,
+      order_direction: orderDirection,
+    };
+
+    if (botId) {
+      params['bot_id'] = botId;
+    }
+    return await this.request('GET', 1, '/deals', params);
+  }
+
   /**
    * Validate the response order is consistent with the generated type
    * Or, an error is thrown

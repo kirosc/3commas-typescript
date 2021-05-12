@@ -108,6 +108,28 @@ forceProcessSmartTrade(id: number)
 setNoteSmartTrade(id: number, note: string)
 ```
 
+### Bots
+
+```ts
+getBots()
+
+getBotsStats()
+
+getDeals(
+    limit: number = 50,
+    offset: number = 0,
+    scope: string = 'completed',
+    order:
+      | 'created_at'
+      | 'updated_at'
+      | 'closed_at'
+      | 'profit'
+      | 'profit_percentage' = 'created_at',
+    orderDirection: 'asc' | 'desc' = 'desc',
+    botId?: string
+)
+```
+
 ## Response Type
 
 The Order type returned by smart trade endpoint is generated using [quicktype](https://github.com/quicktype/quicktype).
