@@ -2,6 +2,9 @@ import Axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
 import {
   APIOptions,
+  BotsParams,
+  BotsStatsParams,
+  DealsParams,
   SmartTradeHistoryParams,
   SmartTradeParams,
   ThreeCommasError,
@@ -268,38 +271,27 @@ export class API {
     });
   }
 
-  async getBots() {
-    return await this.request('GET', 1, '/bots');
+  async getBots(
+    params: BotsParams = {
+      limit: 50,
+      sort_by: 'created_at',
+      sort_direction: 'desc',
+    }
+  ) {
+    return await this.request('GET', 1, '/bots', params);
   }
 
-  async getBotsStats() {
-    return await this.request('GET', 1, '/bots/stats');
+  async getBotsStats(params?: BotsStatsParams) {
+    return await this.request('GET', 1, '/bots/stats', params);
   }
 
   async getDeals(
-    limit: number = 50,
-    offset: number = 0,
-    scope: string = 'completed',
-    order:
-      | 'created_at'
-      | 'updated_at'
-      | 'closed_at'
-      | 'profit'
-      | 'profit_percentage' = 'created_at',
-    orderDirection: 'asc' | 'desc' = 'desc',
-    botId?: string
-  ) {
-    const params = {
-      limit,
-      offset,
-      scope,
-      order,
-      order_direction: orderDirection,
-    };
-
-    if (botId) {
-      params['bot_id'] = botId;
+    params: DealsParams = {
+      limit: 50,
+      order: 'created_at',
+      order_direction: 'desc',
     }
+  ) {
     return await this.request('GET', 1, '/deals', params);
   }
 

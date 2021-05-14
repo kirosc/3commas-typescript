@@ -16,6 +16,39 @@ export interface ThreeCommasError {
   };
 }
 
+export interface BotsParams {
+  limit?: number; // Max 100
+  offset?: number;
+  account_id?: number;
+  scope?: 'enabled' | 'disabled';
+  strategy?: 'long' | 'short';
+  sort_by?: 'profit' | 'created_at' | 'updated_at';
+  sort_direction?: 'asc' | 'desc';
+  quote?: string;
+}
+
+export interface BotsStatsParams {
+  account_id?: number;
+  bot_id?: number;
+}
+
+export interface DealsParams {
+  limit?: number; // Max 1000
+  offset?: number;
+  account_id?: number;
+  bot_id?: number;
+  scope?: 'active' | 'finished' | 'completed' | 'cancelled' | 'failed';
+  order?:
+    | 'created_at'
+    | 'updated_at'
+    | 'closed_at'
+    | 'profit'
+    | 'profit_percentage';
+  order_direction?: 'asc' | 'desc';
+  base?: string;
+  quote?: string;
+}
+
 export interface TransferParams {
   currency: string;
   amount: number | string;

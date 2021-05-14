@@ -111,23 +111,11 @@ setNoteSmartTrade(id: number, note: string)
 ### Bots
 
 ```ts
-getBots()
+getBots(params?: BotsParams)
 
-getBotsStats()
+getBotsStats(params?: BotsStatsParams)
 
-getDeals(
-    limit: number = 50,
-    offset: number = 0,
-    scope: string = 'completed',
-    order:
-      | 'created_at'
-      | 'updated_at'
-      | 'closed_at'
-      | 'profit'
-      | 'profit_percentage' = 'created_at',
-    orderDirection: 'asc' | 'desc' = 'desc',
-    botId?: string
-)
+getDeals(params?: DealsParams)
 ```
 
 ## Response Type
