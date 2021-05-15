@@ -2,6 +2,9 @@ import Axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
 import {
   APIOptions,
+  BotsParams,
+  BotsStatsParams,
+  DealsParams,
   SmartTradeHistoryParams,
   SmartTradeParams,
   ThreeCommasError,
@@ -266,6 +269,30 @@ export class API {
     return await this.request('POST', 2, `/smart_trades/${id}/set_note`, {
       note,
     });
+  }
+
+  async getBots(
+    params: BotsParams = {
+      limit: 50,
+      sort_by: 'created_at',
+      sort_direction: 'desc',
+    }
+  ) {
+    return await this.request('GET', 1, '/bots', params);
+  }
+
+  async getBotsStats(params?: BotsStatsParams) {
+    return await this.request('GET', 1, '/bots/stats', params);
+  }
+
+  async getDeals(
+    params: DealsParams = {
+      limit: 50,
+      order: 'created_at',
+      order_direction: 'desc',
+    }
+  ) {
+    return await this.request('GET', 1, '/deals', params);
   }
 
   /**
