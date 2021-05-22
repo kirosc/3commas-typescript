@@ -1,6 +1,6 @@
 {
   "name": "3commas-typescript",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "TypeScript 3Commas API client",
   "repository": {
     "type": "git",
@@ -27,9 +27,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",
-    "@types/node": "^15.3.0",
+    "@types/node": "^15.6.0",
     "@types/qs": "^6.9.6",
-    "dotenv": "^9.0.2",
+    "dotenv": "^10.0.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "^2.3.0",
