@@ -27,13 +27,13 @@ export class API {
   ) => void | Promise<any>;
   private axios: AxiosInstance;
 
-  constructor(options: APIOptions) {
-    this.KEY = options.key;
-    this.SECRETS = options.secrets;
+  constructor(options?: APIOptions) {
+    this.KEY = options?.key ?? '';
+    this.SECRETS = options?.secrets ?? '';
     this.errorHandler = options?.errorHandler;
     this.axios = Axios.create({
       baseURL: ENDPOINT,
-      timeout: options.timeout ?? 30000,
+      timeout: options?.timeout ?? 30000,
       headers: { APIKEY: this.KEY },
     });
     this.axios.interceptors.request.use(
@@ -51,7 +51,9 @@ export class API {
         }
 
         const relativeUrl = config.url!.replace(config.baseURL!, '');
-        const signature = sign(this.SECRETS, relativeUrl, payload);
+        const signature = this.SECRETS
+          ? sign(this.SECRETS, relativeUrl, payload)
+          : '';
         const newConfig = {
           ...config,
           data,

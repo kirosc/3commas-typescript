@@ -1,6 +1,6 @@
 export interface APIOptions {
-  key: string;
-  secrets: string;
+  key?: string;
+  secrets?: string;
   timeout?: number;
   errorHandler?: (
     response: ThreeCommasError,
