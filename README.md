@@ -19,8 +19,8 @@ npm install 3commas-typescript
 import { API } from '3commas-typescript';
 
 const api = new API({
-  key: 'YOUR_KEY',
-  secrets: 'YOUR_SECRETS',
+  key: 'YOUR_KEY', // Optional if only query endpoints with no security requirement
+  secrets: 'YOUR_SECRETS', // Optional
   timeout: 60000, // Optional, in ms, default to 30000
   errorHandler: (response, reject) => {
     // Optional, Custom handler for 3Commas error
@@ -106,6 +106,13 @@ forceStartSmartTrade(id: number)
 forceProcessSmartTrade(id: number)
 
 setNoteSmartTrade(id: number, note: string)
+
+getSubTrade(id: number)
+
+closeSubTrade(smartTradeId: number, subTradeId: number)
+
+cancelSubTrade(smartTradeId: number, subTradeId: number)
+
 ```
 
 ### Bots

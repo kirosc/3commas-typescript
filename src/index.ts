@@ -273,6 +273,32 @@ export class API {
     });
   }
 
+  /**
+   * Get the sub trades of a smart trade, including entry and take profit orders.
+   *
+   * @param id smart trade id
+   * @returns SmartTrade Order
+   */
+  async getSubTrade(id: number) {
+    return await this.request('GET', 2, `/smart_trades/${id}/trades`);
+  }
+
+  async closeSubTrade(smartTradeId: number, subTradeId: number) {
+    return await this.request(
+      'POST',
+      2,
+      `/smart_trades/${smartTradeId}/trades/${subTradeId}/close_by_market`
+    );
+  }
+
+  async cancelSubTrade(smartTradeId: number, subTradeId: number) {
+    return await this.request(
+      'DELETE',
+      2,
+      `/smart_trades/${smartTradeId}/trades/${subTradeId}`
+    );
+  }
+
   async getBots(
     params: BotsParams = {
       limit: 50,
