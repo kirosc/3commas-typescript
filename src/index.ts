@@ -313,6 +313,10 @@ export class API {
     return await this.request('GET', 1, '/bots/stats', params);
   }
 
+  async getBot(id: number) {
+    return await this.request('GET', 1, `/bots/${id}/show`);
+  }
+
   async getDeals(
     params: DealsParams = {
       limit: 50,
@@ -324,7 +328,7 @@ export class API {
   }
 
   async getDeal(id: number) {
-    return await this.request('GET', 1, `/deals/${id}`);
+    return await this.request('GET', 1, `/deals/${id}/show`);
   }
 
   async getDealSafetyOrders(id: number) {

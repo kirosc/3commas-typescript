@@ -120,6 +120,8 @@ cancelSubTrade(smartTradeId: number, subTradeId: number)
 ```ts
 getBots(params?: BotsParams)
 
+getBot(id: number)
+
 getBotsStats(params?: BotsStatsParams)
 
 getDeals(params?: DealsParams)
