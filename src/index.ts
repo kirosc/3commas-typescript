@@ -323,6 +323,14 @@ export class API {
     return await this.request('GET', 1, '/deals', params);
   }
 
+  async getDeal(id: number) {
+    return await this.request('GET', 1, `/deals/${id}`);
+  }
+
+  async getDealSafetyOrders(id: number) {
+    return await this.request('GET', 1, `/deals/${id}/market_orders`);
+  }
+
   /**
    * Validate the response order is consistent with the generated type
    * Or, an error is thrown

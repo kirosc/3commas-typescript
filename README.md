@@ -123,6 +123,10 @@ getBots(params?: BotsParams)
 getBotsStats(params?: BotsStatsParams)
 
 getDeals(params?: DealsParams)
+
+getDeal(id: number)
+
+getDealSafetyOrders(id: number)
 ```
 
 ## Response Type
