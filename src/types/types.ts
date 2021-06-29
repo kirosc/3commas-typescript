@@ -1,3 +1,5 @@
+import WebSocket from 'ws';
+
 export interface APIOptions {
   key?: string;
   secrets?: string;
@@ -160,3 +162,7 @@ export interface Step {
   volume: number;
   trailing?: Trailing;
 }
+
+// Websocket
+export type Channel = 'SmartTradesChannel' | 'DealsChannel';
+export type WebsocketCallback = (data: WebSocket.Data) => void;

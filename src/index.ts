@@ -1,9 +1,11 @@
 import Axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
+import WebSocket from 'ws';
 import {
   APIOptions,
   BotsParams,
   BotsStatsParams,
+  Channel,
   DealsParams,
   SmartTradeHistoryParams,
   SmartTradeParams,
@@ -17,6 +19,7 @@ import { Convert, Order } from './types/generated-types';
 const ENDPOINT = 'https://api.3commas.io';
 const V1 = '/public/api/ver1';
 const V2 = '/public/api/v2';
+const WS = 'wss://ws.3commas.io/websocket';
 
 export class API {
   private readonly KEY: string;
@@ -26,6 +29,7 @@ export class API {
     reject: (reason?: any) => void
   ) => void | Promise<any>;
   private axios: AxiosInstance;
+  private ws?: WebSocket;
 
   constructor(options?: APIOptions) {
     this.KEY = options?.key ?? '';
@@ -333,6 +337,59 @@ export class API {
 
   async getDealSafetyOrders(id: number) {
     return await this.request('GET', 1, `/deals/${id}/market_orders`);
+  }
+
+  // Websocket
+
+  private buildIdentifier(channel: Channel, url: string): string {
+    const idetifier = {
+      channel,
+      users: [
+        {
+          api_key: this.KEY,
+          signature: sign(this.SECRETS, url),
+        },
+      ],
+    };
+
+    return JSON.stringify(idetifier);
+  }
+
+  private subscribe(
+    channel: Channel,
+    url: string,
+    callback?: (data: WebSocket.Data) => void
+  ) {
+    const payload = JSON.stringify({
+      identifier: this.buildIdentifier(channel, url),
+      command: 'subscribe',
+    });
+
+    if (!this.ws) {
+      this.ws = new WebSocket(WS);
+      this.ws.onopen = () => this.ws?.send(payload);
+    } else {
+      this.ws.send(payload);
+    }
+
+    if (callback) {
+      this.ws.on('message', callback);
+    }
+  }
+
+  subscribeSmartTrade(callback?: (data: WebSocket.Data) => void) {
+    this.subscribe('SmartTradesChannel', '/smart_trades', callback);
+  }
+
+  subscribeDeal(callback?: (data: WebSocket.Data) => void) {
+    this.subscribe('DealsChannel', '/deals', callback);
+  }
+
+  // 3Commas does not support unsubscribe a channel
+  unsubscribe() {
+    if (this.ws) {
+      this.ws.close();
+    }
   }
 
   /**

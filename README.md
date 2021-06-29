@@ -131,6 +131,16 @@ getDeal(id: number)
 getDealSafetyOrders(id: number)
 ```
 
+### Websocket
+
+```ts
+subscribeSmartTrade(callback?: (data: WebSocket.Data) => void)
+
+subscribeDeal(callback?: (data: WebSocket.Data) => void)
+
+unsubscribe()
+```
+
 ## Response Type
 
 The Order type returned by smart trade endpoint is generated using [quicktype](https://github.com/quicktype/quicktype).
