@@ -38,7 +38,10 @@ export class API {
     this.axios = Axios.create({
       baseURL: ENDPOINT,
       timeout: options?.timeout ?? 30000,
-      headers: { APIKEY: this.KEY },
+      headers: {
+        APIKEY: this.KEY,
+        ...(options?.forcedMode && { 'Forced-Mode': options?.forcedMode }),
+      },
     });
     this.axios.interceptors.request.use(
       (config) => {
