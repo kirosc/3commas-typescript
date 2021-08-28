@@ -12,6 +12,7 @@ import {
   ThreeCommasError,
   TransferHistoryParams,
   TransferParams,
+  WebsocketCallback,
 } from './types/types';
 import { sign } from './lib/crypto';
 import { Convert, Order } from './types/generated-types';
@@ -361,22 +362,35 @@ export class API {
   private subscribe(
     channel: Channel,
     url: string,
-    callback?: (data: WebSocket.Data) => void
+    callback?: WebsocketCallback
   ) {
     const payload = JSON.stringify({
       identifier: this.buildIdentifier(channel, url),
       command: 'subscribe',
     });
-
-    if (!this.ws) {
+    const setUpWebsocketListener = (callback?: WebsocketCallback) => {
+      if (callback) {
+        this.ws?.on('message', (data: Buffer, isBinary: boolean) => {
+          const message = isBinary ? data : data.toString();
+          callback(message);
+        });
+      }
+      this.ws?.on('close', (code) => {
+        if (code === 1006) {
+          setUpWebsocket(payload);
+        }
+      });
+    };
+    const setUpWebsocket = (payload: string) => {
       this.ws = new WebSocket(WS);
       this.ws.onopen = () => this.ws?.send(payload);
+      setUpWebsocketListener(callback);
+    };
+
+    if (!this.ws) {
+      setUpWebsocket(payload);
     } else {
       this.ws.send(payload);
-    }
-
-    if (callback) {
-      this.ws.on('message', callback);
     }
   }
 
