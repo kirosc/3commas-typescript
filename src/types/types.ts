@@ -130,6 +130,7 @@ export interface UnitsClass {
 
 export interface StopLoss {
   enabled: boolean;
+  breakeven?: boolean;
   order_type?: 'market' | 'limit';
   price?: UnitsClass;
   conditional?: StopLossConditional;
