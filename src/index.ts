@@ -7,6 +7,7 @@ import {
   BotsStatsParams,
   Channel,
   DealsParams,
+  FundParams,
   SmartTradeHistoryParams,
   SmartTradeParams,
   ThreeCommasError,
@@ -254,11 +255,20 @@ export class API {
     return await this.request('PATCH', 2, `/smart_trades/${id}`, params);
   }
 
-  async averageSmartTrade(id: number, params: any): Promise<Order> {
+  async averageSmartTrade(id: number, params: FundParams): Promise<Order> {
     return await this.request(
       'POST',
       2,
       `/smart_trades/${id}/add_funds`,
+      params
+    );
+  }
+
+  async reduceFund(id: number, params: FundParams): Promise<Order> {
+    return await this.request(
+      'POST',
+      2,
+      `/smart_trades/${id}/reduce_funds`,
       params
     );
   }

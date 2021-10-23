@@ -52,6 +52,16 @@ export interface DealsParams {
   quote?: string;
 }
 
+export interface FundParams {
+  order_type: 'market' | 'limit';
+  units: {
+    value: number | string;
+  };
+  price?: {
+    value: number | string;
+  };
+}
+
 export interface TransferParams {
   currency: string;
   amount: number | string;
