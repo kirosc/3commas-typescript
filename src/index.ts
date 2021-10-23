@@ -364,6 +364,15 @@ export class API {
     return await this.request('GET', 1, `/deals/${id}/market_orders`);
   }
 
+  async customRequest(
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
+    version: 1 | 2,
+    path: string,
+    payload?: any
+  ) {
+    return await this.request(method, version, path, payload);
+  }
+
   // Websocket
 
   private buildIdentifier(channel: Channel, url: string): string {
