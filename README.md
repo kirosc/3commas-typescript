@@ -56,7 +56,9 @@ getMarketList()
 
 getMarketPairs(params?: any)
 
-getCurrencyRate(params: any)
+getCurrencyRate(params: CurrencyParams)
+
+getCurrencyRateWithLeverageData(params: MarketCurrencyParams)
 
 getActiveTradeEntities(account_id: number)
 
@@ -98,7 +100,9 @@ cancelSmartTrade(id: number)
 
 updateSmartTrade(id: number)
 
-averageSmartTrade(id: number, params: any)
+averageSmartTrade(id: number, params: FundParams)
+
+reduceFund(id: number, params: FundParams)
 
 closeSmartTrade(id: number)
 
@@ -130,6 +134,12 @@ getDeals(params?: DealsParams)
 getDeal(id: number)
 
 getDealSafetyOrders(id: number)
+```
+
+### Custom Request
+
+```ts
+customRequest(method: string, version: number, path: string, payload?: any)
 ```
 
 ### Websocket
