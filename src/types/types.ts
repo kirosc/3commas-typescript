@@ -35,6 +35,11 @@ export interface BotsStatsParams {
   bot_id?: number;
 }
 
+export interface CurrencyParams {
+  market_code?: string;
+  pair: string;
+}
+
 export interface DealsParams {
   limit?: number; // Max 1000
   offset?: number;
@@ -60,6 +65,11 @@ export interface FundParams {
   price?: {
     value: number | string;
   };
+}
+
+export interface MarketCurrencyParams {
+  market_code: string;
+  pair: string;
 }
 
 export interface TransferParams {

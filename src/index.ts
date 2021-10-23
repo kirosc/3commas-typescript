@@ -6,8 +6,10 @@ import {
   BotsParams,
   BotsStatsParams,
   Channel,
+  CurrencyParams,
   DealsParams,
   FundParams,
+  MarketCurrencyParams,
   SmartTradeHistoryParams,
   SmartTradeParams,
   ThreeCommasError,
@@ -145,8 +147,17 @@ export class API {
     return await this.request('GET', 1, '/accounts/market_pairs', params);
   }
 
-  async getCurrencyRate(params: any) {
+  async getCurrencyRate(params: CurrencyParams) {
     return await this.request('GET', 1, '/accounts/currency_rates', params);
+  }
+
+  async getCurrencyRateWithLeverageData(params: MarketCurrencyParams) {
+    return await this.request(
+      'GET',
+      1,
+      '/accounts/currency_rates_with_leverage_data',
+      params
+    );
   }
 
   async getActiveTradeEntities(account_id: number | string) {
