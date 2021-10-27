@@ -82,7 +82,7 @@ export class API {
     );
   }
 
-  private request(
+  protected request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     version: 1 | 2,
     path: string,
