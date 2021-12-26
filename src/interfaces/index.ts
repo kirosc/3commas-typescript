@@ -22,3 +22,4 @@ export * from './transfer-history-params.interface';
 export * from './transfer-params.interface';
 export * from './units-class.interface';
 export * from './deal.interface';
+export * from './update-deal.interface';

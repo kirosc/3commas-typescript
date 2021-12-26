@@ -17,6 +17,7 @@ import {
   TransferHistoryParams,
   TransferParams,
   Deal,
+  UpdateDealParams,
 } from './interfaces';
 import { sign } from './lib/crypto';
 import { Convert, Order } from './lib/generated-types';
@@ -45,7 +46,7 @@ export class API {
       },
     });
     this.axios.interceptors.request.use(
-      config => {
+      (config) => {
         let data = {
           ...config.data,
           api_key: this.KEY,
@@ -73,7 +74,7 @@ export class API {
 
         return newConfig;
       },
-      error => Promise.reject(error),
+      (error) => Promise.reject(error),
     );
   }
 
@@ -334,6 +335,10 @@ export class API {
     return this.request('GET', 1, `/deals/${id}/market_orders`);
   }
 
+  updateDeal({ id, ...params }: UpdateDealParams): Promise<Deal> {
+    return this.request('PATCH', 1, `/deals/${id}/update_deal`, params);
+  }
+
   customRequest(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     version: 1 | 2,
@@ -406,7 +411,7 @@ export class API {
           setupCallback(message);
         });
       }
-      this.ws?.on('close', code => {
+      this.ws?.on('close', (code) => {
         if (code === 1006) {
           setUpWebsocket(payload);
         }
