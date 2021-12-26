@@ -41,9 +41,24 @@ export interface CurrencyParams {
 }
 
 export interface DealsParams {
-  limit?: number; // Max 1000
+  /**
+   * Max 1000
+   */
+  limit?: number;
+  /**
+   * Offset records
+   */
   offset?: number;
+  /**
+   * Account to show bots on.
+   *
+   * Return all if not specified.
+   * Gather this from GET /ver1/accounts
+   */
   account_id?: number;
+  /**
+   * Bot show deals on. Return all if not specified
+   */
   bot_id?: number;
   scope?: 'active' | 'finished' | 'completed' | 'cancelled' | 'failed';
   order?:
@@ -53,7 +68,13 @@ export interface DealsParams {
     | 'profit'
     | 'profit_percentage';
   order_direction?: 'asc' | 'desc';
+  /**
+   * Base currency
+   */
   base?: string;
+  /**
+   * Quote currency
+   */
   quote?: string;
 }
 
