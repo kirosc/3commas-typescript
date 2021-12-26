@@ -50,6 +50,10 @@ export interface DealsParams {
    */
   offset?: number;
   /**
+   * Param for a filter by created date
+   */
+  from?: Date;
+  /**
    * Account to show bots on.
    *
    * Return all if not specified.
