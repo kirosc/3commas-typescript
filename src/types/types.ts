@@ -64,7 +64,24 @@ export interface DealsParams {
    * Bot show deals on. Return all if not specified
    */
   bot_id?: number;
-  scope?: 'active' | 'finished' | 'completed' | 'cancelled' | 'failed';
+  /**
+   * Query scope
+   *
+   * active - active deals
+   * finished - finished deals
+   * completed - successfully completed
+   * cancelled - cancelled deals
+   * failed - failed deals
+   * any other value or null (default) - all deals
+   */
+  scope?:
+    | 'active'
+    | 'finished'
+    | 'completed'
+    | 'cancelled'
+    | 'failed'
+    | null
+    | string;
   order?:
     | 'created_at'
     | 'updated_at'
