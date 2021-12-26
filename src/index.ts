@@ -16,6 +16,7 @@ import {
   ThreeCommasError,
   TransferHistoryParams,
   TransferParams,
+  Deal,
 } from './interfaces';
 import { sign } from './lib/crypto';
 import { Convert, Order } from './lib/generated-types';
@@ -44,7 +45,7 @@ export class API {
       },
     });
     this.axios.interceptors.request.use(
-      config => {
+      (config) => {
         let data = {
           ...config.data,
           api_key: this.KEY,
@@ -72,7 +73,7 @@ export class API {
 
         return newConfig;
       },
-      error => Promise.reject(error),
+      (error) => Promise.reject(error),
     );
   }
 
@@ -321,11 +322,11 @@ export class API {
       order: 'created_at',
       order_direction: 'desc',
     },
-  ): Promise<any> {
+  ): Promise<Deal[]> {
     return this.request('GET', 1, '/deals', params);
   }
 
-  getDeal(id: number): Promise<any> {
+  getDeal(id: number): Promise<Deal> {
     return this.request('GET', 1, `/deals/${id}/show`);
   }
 
@@ -405,7 +406,7 @@ export class API {
           setupCallback(message);
         });
       }
-      this.ws?.on('close', code => {
+      this.ws?.on('close', (code) => {
         if (code === 1006) {
           setUpWebsocket(payload);
         }
