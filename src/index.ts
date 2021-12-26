@@ -19,6 +19,7 @@ import {
 } from './types/types';
 import { sign } from './lib/crypto';
 import { Convert, Order } from './types/generated-types';
+import { Deal } from './types/deal.interface';
 
 const ENDPOINT = 'https://api.3commas.io';
 const V1 = '/public/api/ver1';
@@ -352,11 +353,11 @@ export class API {
       order: 'created_at',
       order_direction: 'desc',
     }
-  ) {
+  ): Promise<Deal[]> {
     return await this.request('GET', 1, '/deals', params);
   }
 
-  async getDeal(id: number) {
+  async getDeal(id: number): Promise<Deal> {
     return await this.request('GET', 1, `/deals/${id}/show`);
   }
 
