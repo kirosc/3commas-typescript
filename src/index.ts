@@ -45,7 +45,7 @@ export class API {
       },
     });
     this.axios.interceptors.request.use(
-      (config) => {
+      config => {
         let data = {
           ...config.data,
           api_key: this.KEY,
@@ -73,7 +73,7 @@ export class API {
 
         return newConfig;
       },
-      (error) => Promise.reject(error),
+      error => Promise.reject(error),
     );
   }
 
@@ -406,7 +406,7 @@ export class API {
           setupCallback(message);
         });
       }
-      this.ws?.on('close', (code) => {
+      this.ws?.on('close', code => {
         if (code === 1006) {
           setUpWebsocket(payload);
         }
