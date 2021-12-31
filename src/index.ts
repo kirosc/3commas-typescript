@@ -2,13 +2,11 @@ import Axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
 import WebSocket from 'ws';
 
-import { sign } from './lib/crypto';
-import { Convert, Order } from './types/generated-types';
+import { API_BASE_PATHS, API_BASE_URL, WEBSOCKET_URL } from './constants';
 import {
   APIOptions,
   BotsParams,
   BotsStatsParams,
-  Channel,
   CurrencyParams,
   DealsParams,
   FundParams,
@@ -18,20 +16,17 @@ import {
   ThreeCommasError,
   TransferHistoryParams,
   TransferParams,
-  WebsocketCallback,
-} from './types/types';
-
-const ENDPOINT = 'https://api.3commas.io';
-const V1 = '/public/api/ver1';
-const V2 = '/public/api/v2';
-const WS = 'wss://ws.3commas.io/websocket';
+} from './interfaces';
+import { sign } from './lib/crypto';
+import { Convert, Order } from './lib/generated-types';
+import { Channel, WebsocketCallback } from './types';
 
 export class API {
   private readonly KEY: string;
   private readonly SECRETS: string;
   private readonly errorHandler?: (
     response: ThreeCommasError,
-    reject: (reason?: any) => void
+    reject: (reason?: any) => void,
   ) => void | Promise<any>;
   private axios: AxiosInstance;
   private ws?: WebSocket;
@@ -41,7 +36,7 @@ export class API {
     this.SECRETS = options?.secrets ?? '';
     this.errorHandler = options?.errorHandler;
     this.axios = Axios.create({
-      baseURL: ENDPOINT,
+      baseURL: API_BASE_URL,
       timeout: options?.timeout ?? 30000,
       headers: {
         APIKEY: this.KEY,
@@ -92,7 +87,7 @@ export class API {
       try {
         const { data } = await this.axios({
           method,
-          url: `${ENDPOINT}${version === 1 ? V1 : V2}${path}`,
+          url: `${API_BASE_URL}${API_BASE_PATHS[version]}${path}`,
           params: method === 'GET' ? payload : undefined,
           data: method !== 'GET' ? payload : undefined,
         });
@@ -396,7 +391,7 @@ export class API {
       command: 'subscribe',
     });
     const setUpWebsocket = (socketPayload: string): void => {
-      this.ws = new WebSocket(WS);
+      this.ws = new WebSocket(WEBSOCKET_URL);
       this.ws.onopen = (): any => this.ws?.send(socketPayload);
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       setUpWebsocketListener(callback);
