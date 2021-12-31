@@ -1,6 +1,9 @@
 import Axios, { AxiosError, AxiosInstance } from 'axios';
 import qs from 'qs';
 import WebSocket from 'ws';
+
+import { sign } from './lib/crypto';
+import { Convert, Order } from './types/generated-types';
 import {
   APIOptions,
   BotsParams,
@@ -17,8 +20,6 @@ import {
   TransferParams,
   WebsocketCallback,
 } from './types/types';
-import { sign } from './lib/crypto';
-import { Convert, Order } from './types/generated-types';
 
 const ENDPOINT = 'https://api.3commas.io';
 const V1 = '/public/api/ver1';
@@ -48,7 +49,7 @@ export class API {
       },
     });
     this.axios.interceptors.request.use(
-      (config) => {
+      config => {
         let data = {
           ...config.data,
           api_key: this.KEY,
@@ -61,7 +62,7 @@ export class API {
           data = null;
         }
 
-        const relativeUrl = config.url!.replace(config.baseURL!, '');
+        const relativeUrl = config.url?.replace(config.baseURL || '', '') || '';
         const signature = this.SECRETS
           ? sign(this.SECRETS, relativeUrl, payload)
           : '';
@@ -76,18 +77,17 @@ export class API {
 
         return newConfig;
       },
-      (error) => {
-        return Promise.reject(error);
-      }
+      error => Promise.reject(error),
     );
   }
 
-  private request(
+  request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     version: 1 | 2,
     path: string,
-    payload?: any
+    payload?: Record<string, any>,
   ): Promise<any> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         const { data } = await this.axios({
@@ -107,197 +107,172 @@ export class API {
     });
   }
 
-  async ping() {
-    return await this.request('GET', 1, '/ping');
+  ping(): Promise<any> {
+    return this.request('GET', 1, '/ping');
   }
 
-  async time() {
-    return await this.request('GET', 1, '/time');
+  time(): Promise<any> {
+    return this.request('GET', 1, '/time');
   }
 
-  async transfer(params: TransferParams) {
-    return await this.request('POST', 1, '/accounts/transfer', params);
+  transfer(params: TransferParams): Promise<any> {
+    return this.request('POST', 1, '/accounts/transfer', params);
   }
 
-  async getTransferHistory(params: TransferHistoryParams) {
-    return await this.request('GET', 1, '/accounts/transfer_history', params);
+  getTransferHistory(params: TransferHistoryParams): Promise<any> {
+    return this.request('GET', 1, '/accounts/transfer_history', params);
   }
 
-  async getTransferData() {
-    return await this.request('GET', 1, '/accounts/transfer_data');
+  getTransferData(): Promise<any> {
+    return this.request('GET', 1, '/accounts/transfer_data');
   }
 
-  async addExchangeAccount(params: any) {
-    return await this.request('POST', 1, '/accounts/new', params);
+  addExchangeAccount(params: Record<string, any>): Promise<any> {
+    return this.request('POST', 1, '/accounts/new', params);
   }
 
-  async editExchangeAccount(params: any) {
-    return await this.request('POST', 1, '/accounts/update', params);
+  editExchangeAccount(params: Record<string, any>): Promise<any> {
+    return this.request('POST', 1, '/accounts/update', params);
   }
 
-  async getExchange() {
-    return await this.request('GET', 1, '/accounts');
+  getExchange(): Promise<any> {
+    return this.request('GET', 1, '/accounts');
   }
 
-  async getMarketList() {
-    return await this.request('GET', 1, '/accounts/market_list');
+  getMarketList(): Promise<any> {
+    return this.request('GET', 1, '/accounts/market_list');
   }
 
-  async getMarketPairs(params?: any) {
-    return await this.request('GET', 1, '/accounts/market_pairs', params);
+  getMarketPairs(params?: Record<string, any>): Promise<any> {
+    return this.request('GET', 1, '/accounts/market_pairs', params);
   }
 
-  async getCurrencyRate(params: CurrencyParams) {
-    return await this.request('GET', 1, '/accounts/currency_rates', params);
+  getCurrencyRate(params: CurrencyParams): Promise<any> {
+    return this.request('GET', 1, '/accounts/currency_rates', params);
   }
 
-  async getCurrencyRateWithLeverageData(params: MarketCurrencyParams) {
-    return await this.request(
+  getCurrencyRateWithLeverageData(params: MarketCurrencyParams): Promise<any> {
+    return this.request(
       'GET',
       1,
       '/accounts/currency_rates_with_leverage_data',
-      params
+      params,
     );
   }
 
-  async getActiveTradeEntities(account_id: number | string) {
-    return await this.request(
+  getActiveTradeEntities(account_id: number | string): Promise<any> {
+    return this.request(
       'GET',
       1,
-      `/accounts/${account_id}/active_trading_entities`
+      `/accounts/${account_id}/active_trading_entities`,
     );
   }
 
-  async sellAllToUSD(account_id: number | string) {
-    return await this.request(
-      'POST',
-      1,
-      `/accounts/${account_id}/sell_all_to_usd`
-    );
+  sellAllToUSD(account_id: number | string): Promise<any> {
+    return this.request('POST', 1, `/accounts/${account_id}/sell_all_to_usd`);
   }
 
-  async sellAllToBTC(account_id: number | string) {
-    return await this.request(
-      'POST',
-      1,
-      `/accounts/${account_id}/sell_all_to_btc`
-    );
+  sellAllToBTC(account_id: number | string): Promise<any> {
+    return this.request('POST', 1, `/accounts/${account_id}/sell_all_to_btc`);
   }
 
-  async getBalanceChartData(account_id: number | string, params: any) {
-    return await this.request(
+  getBalanceChartData(
+    account_id: number | string,
+    params: Record<string, any>,
+  ): Promise<any> {
+    return this.request(
       'GET',
       1,
       `/accounts/${account_id}/balance_chart_data`,
-      params
+      params,
     );
   }
 
-  async loadBalances(account_id: number | string) {
-    return await this.request(
-      'POST',
-      1,
-      `/accounts/${account_id}/load_balances`
-    );
+  loadBalances(account_id: number | string): Promise<any> {
+    return this.request('POST', 1, `/accounts/${account_id}/load_balances`);
   }
 
-  async renameExchangeAccount(account_id: number | string, name: string) {
-    return await this.request('POST', 1, `/accounts/${account_id}/rename`, {
+  renameExchangeAccount(
+    account_id: number | string,
+    name: string,
+  ): Promise<any> {
+    return this.request('POST', 1, `/accounts/${account_id}/rename`, {
       name,
     });
   }
 
-  async removeExchangeAccount(account_id: number | string) {
-    return await this.request('POST', 1, `/accounts/${account_id}/remove`);
+  removeExchangeAccount(account_id: number | string): Promise<any> {
+    return this.request('POST', 1, `/accounts/${account_id}/remove`);
   }
 
-  async getPieChartData(account_id: number | string) {
-    return await this.request(
+  getPieChartData(account_id: number | string): Promise<any> {
+    return this.request('POST', 1, `/accounts/${account_id}/pie_chart_data`);
+  }
+
+  getAccountTableData(account_id: number | string): Promise<any> {
+    return this.request(
       'POST',
       1,
-      `/accounts/${account_id}/pie_chart_data`
+      `/accounts/${account_id}/account_table_data`,
     );
   }
 
-  async getAccountTableData(account_id: number | string) {
-    return await this.request(
-      'POST',
-      1,
-      `/accounts/${account_id}/account_table_data`
-    );
+  getAccountInfo(account_id?: number): Promise<any> {
+    return this.request('GET', 1, `/accounts/${account_id ?? 'summary'}`);
   }
 
-  async getAccountInfo(account_id?: number) {
-    return await this.request('GET', 1, `/accounts/${account_id ?? 'summary'}`);
+  getLeverageData(account_id: number | string, pair: string): Promise<any> {
+    return this.request('GET', 1, `/accounts/${account_id}/leverage_data`, {
+      pair,
+    });
   }
 
-  async getLeverageData(account_id: number | string, pair: string) {
-    return await this.request(
-      'GET',
-      1,
-      `/accounts/${account_id}/leverage_data`,
-      { pair }
-    );
+  changeUserMode(mode: 'paper' | 'real'): Promise<any> {
+    return this.request('POST', 1, '/users/change_mode', { mode });
   }
 
-  async changeUserMode(mode: 'paper' | 'real') {
-    return await this.request('POST', 1, '/users/change_mode', { mode });
+  getSmartTradeHistory(params?: SmartTradeHistoryParams): Promise<Order[]> {
+    return this.request('GET', 2, '/smart_trades', params);
   }
 
-  async getSmartTradeHistory(
-    params?: SmartTradeHistoryParams
-  ): Promise<Order[]> {
-    return await this.request('GET', 2, '/smart_trades', params);
+  smartTrade(params: SmartTradeParams): Promise<Order> {
+    return this.request('POST', 2, '/smart_trades', params);
   }
 
-  async smartTrade(params: SmartTradeParams): Promise<Order> {
-    return await this.request('POST', 2, '/smart_trades', params);
+  getSmartTrade(id: number): Promise<Order> {
+    return this.request('GET', 2, `/smart_trades/${id}`);
   }
 
-  async getSmartTrade(id: number): Promise<Order> {
-    return await this.request('GET', 2, `/smart_trades/${id}`);
+  cancelSmartTrade(id: number): Promise<Order> {
+    return this.request('DELETE', 2, `/smart_trades/${id}`);
   }
 
-  async cancelSmartTrade(id: number): Promise<Order> {
-    return await this.request('DELETE', 2, `/smart_trades/${id}`);
+  updateSmartTrade(id: number, params: Record<string, any>): Promise<Order> {
+    return this.request('PATCH', 2, `/smart_trades/${id}`, params);
   }
 
-  async updateSmartTrade(id: number, params: any): Promise<Order> {
-    return await this.request('PATCH', 2, `/smart_trades/${id}`, params);
+  averageSmartTrade(id: number, params: FundParams): Promise<Order> {
+    return this.request('POST', 2, `/smart_trades/${id}/add_funds`, params);
   }
 
-  async averageSmartTrade(id: number, params: FundParams): Promise<Order> {
-    return await this.request(
-      'POST',
-      2,
-      `/smart_trades/${id}/add_funds`,
-      params
-    );
+  reduceFund(id: number, params: FundParams): Promise<Order> {
+    return this.request('POST', 2, `/smart_trades/${id}/reduce_funds`, params);
   }
 
-  async reduceFund(id: number, params: FundParams): Promise<Order> {
-    return await this.request(
-      'POST',
-      2,
-      `/smart_trades/${id}/reduce_funds`,
-      params
-    );
+  closeSmartTrade(id: number): Promise<Order> {
+    return this.request('POST', 2, `/smart_trades/${id}/close_by_market`);
   }
 
-  async closeSmartTrade(id: number): Promise<Order> {
-    return await this.request('POST', 2, `/smart_trades/${id}/close_by_market`);
+  forceStartSmartTrade(id: number): Promise<Order> {
+    return this.request('POST', 2, `/smart_trades/${id}/force_start`);
   }
 
-  async forceStartSmartTrade(id: number): Promise<Order> {
-    return await this.request('POST', 2, `/smart_trades/${id}/force_start`);
+  forceProcessSmartTrade(id: number): Promise<Order> {
+    return this.request('POST', 2, `/smart_trades/${id}/force_process`);
   }
 
-  async forceProcessSmartTrade(id: number): Promise<Order> {
-    return await this.request('POST', 2, `/smart_trades/${id}/force_process`);
-  }
-
-  async setNoteSmartTrade(id: number, note: string): Promise<Order> {
-    return await this.request('POST', 2, `/smart_trades/${id}/set_note`, {
+  setNoteSmartTrade(id: number, note: string): Promise<Order> {
+    return this.request('POST', 2, `/smart_trades/${id}/set_note`, {
       note,
     });
   }
@@ -305,75 +280,97 @@ export class API {
   /**
    * Get the sub trades of a smart trade, including entry and take profit orders.
    *
-   * @param id smart trade id
    * @returns SmartTrade Order
    */
-  async getSubTrade(id: number) {
-    return await this.request('GET', 2, `/smart_trades/${id}/trades`);
+  getSubTrade(id: number): Promise<any> {
+    return this.request('GET', 2, `/smart_trades/${id}/trades`);
   }
 
-  async closeSubTrade(smartTradeId: number, subTradeId: number) {
-    return await this.request(
+  closeSubTrade(smartTradeId: number, subTradeId: number): Promise<any> {
+    return this.request(
       'POST',
       2,
-      `/smart_trades/${smartTradeId}/trades/${subTradeId}/close_by_market`
+      `/smart_trades/${smartTradeId}/trades/${subTradeId}/close_by_market`,
     );
   }
 
-  async cancelSubTrade(smartTradeId: number, subTradeId: number) {
-    return await this.request(
+  cancelSubTrade(smartTradeId: number, subTradeId: number): Promise<any> {
+    return this.request(
       'DELETE',
       2,
-      `/smart_trades/${smartTradeId}/trades/${subTradeId}`
+      `/smart_trades/${smartTradeId}/trades/${subTradeId}`,
     );
   }
 
-  async getBots(
+  getBots(
     params: BotsParams = {
       limit: 50,
       sort_by: 'created_at',
       sort_direction: 'desc',
-    }
-  ) {
-    return await this.request('GET', 1, '/bots', params);
+    },
+  ): Promise<any> {
+    return this.request('GET', 1, '/bots', params);
   }
 
-  async getBotsStats(params?: BotsStatsParams) {
-    return await this.request('GET', 1, '/bots/stats', params);
+  getBotsStats(params?: BotsStatsParams): Promise<any> {
+    return this.request('GET', 1, '/bots/stats', params);
   }
 
-  async getBot(id: number) {
-    return await this.request('GET', 1, `/bots/${id}/show`);
+  getBot(id: number): Promise<any> {
+    return this.request('GET', 1, `/bots/${id}/show`);
   }
 
-  async getDeals(
+  getDeals(
     params: DealsParams = {
       limit: 50,
       order: 'created_at',
       order_direction: 'desc',
-    }
-  ) {
-    return await this.request('GET', 1, '/deals', params);
+    },
+  ): Promise<any> {
+    return this.request('GET', 1, '/deals', params);
   }
 
-  async getDeal(id: number) {
-    return await this.request('GET', 1, `/deals/${id}/show`);
+  getDeal(id: number): Promise<any> {
+    return this.request('GET', 1, `/deals/${id}/show`);
   }
 
-  async getDealSafetyOrders(id: number) {
-    return await this.request('GET', 1, `/deals/${id}/market_orders`);
+  getDealSafetyOrders(id: number): Promise<any> {
+    return this.request('GET', 1, `/deals/${id}/market_orders`);
   }
 
-  async customRequest(
+  customRequest(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     version: 1 | 2,
     path: string,
-    payload?: any
-  ) {
-    return await this.request(method, version, path, payload);
+    payload?: Record<string, any>,
+  ): Promise<any> {
+    return this.request(method, version, path, payload);
   }
 
   // Websocket
+
+  subscribeSmartTrade(callback?: (data: WebSocket.Data) => void): void {
+    this.subscribe('SmartTradesChannel', '/smart_trades', callback);
+  }
+
+  subscribeDeal(callback?: (data: WebSocket.Data) => void): void {
+    this.subscribe('DealsChannel', '/deals', callback);
+  }
+
+  // 3Commas does not support unsubscribe a channel
+  unsubscribe(): void {
+    if (this.ws) {
+      this.ws.close();
+    }
+  }
+
+  /**
+   * Validate the response order is consistent with the generated type
+   * Or, an error is thrown
+   */
+  validateOrderType(order: Order): Order {
+    return Convert.toOrder(JSON.stringify(order));
+  }
 
   private buildIdentifier(channel: Channel, url: string): string {
     const idetifier = {
@@ -392,29 +389,32 @@ export class API {
   private subscribe(
     channel: Channel,
     url: string,
-    callback?: WebsocketCallback
-  ) {
+    callback?: WebsocketCallback,
+  ): void {
     const payload = JSON.stringify({
       identifier: this.buildIdentifier(channel, url),
       command: 'subscribe',
     });
-    const setUpWebsocketListener = (callback?: WebsocketCallback) => {
-      if (callback) {
+    const setUpWebsocket = (socketPayload: string): void => {
+      this.ws = new WebSocket(WS);
+      this.ws.onopen = (): any => this.ws?.send(socketPayload);
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      setUpWebsocketListener(callback);
+    };
+    const setUpWebsocketListener = (
+      setupCallback?: WebsocketCallback,
+    ): void => {
+      if (setupCallback) {
         this.ws?.on('message', (data: Buffer, isBinary: boolean) => {
           const message = isBinary ? data : data.toString();
-          callback(message);
+          setupCallback(message);
         });
       }
-      this.ws?.on('close', (code) => {
+      this.ws?.on('close', code => {
         if (code === 1006) {
           setUpWebsocket(payload);
         }
       });
-    };
-    const setUpWebsocket = (payload: string) => {
-      this.ws = new WebSocket(WS);
-      this.ws.onopen = () => this.ws?.send(payload);
-      setUpWebsocketListener(callback);
     };
 
     if (!this.ws) {
@@ -422,30 +422,5 @@ export class API {
     } else {
       this.ws.send(payload);
     }
-  }
-
-  subscribeSmartTrade(callback?: (data: WebSocket.Data) => void) {
-    this.subscribe('SmartTradesChannel', '/smart_trades', callback);
-  }
-
-  subscribeDeal(callback?: (data: WebSocket.Data) => void) {
-    this.subscribe('DealsChannel', '/deals', callback);
-  }
-
-  // 3Commas does not support unsubscribe a channel
-  unsubscribe() {
-    if (this.ws) {
-      this.ws.close();
-    }
-  }
-
-  /**
-   * Validate the response order is consistent with the generated type
-   * Or, an error is thrown
-   *
-   * @param order order
-   */
-  validateOrderType(order: Order) {
-    return Convert.toOrder(JSON.stringify(order));
   }
 }

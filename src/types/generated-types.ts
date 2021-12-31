@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 // To parse this data:
 //
 //   import { Convert, Order } from "./file";
@@ -191,11 +193,11 @@ export interface StepData {
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
-  public static toOrder(json: string): Order {
+  static toOrder(json: string): Order {
     return cast(JSON.parse(json), r('Order'));
   }
 
-  public static orderToJson(value: Order): string {
+  static orderToJson(value: Order): string {
     return JSON.stringify(uncast(value, r('Order')), null, 2);
   }
 }
@@ -204,12 +206,12 @@ function invalidValue(typ: any, val: any, key: any = ''): never {
   if (key) {
     throw Error(
       `Invalid value for key "${key}". Expected type ${JSON.stringify(
-        typ
-      )} but got ${JSON.stringify(val)}`
+        typ,
+      )} but got ${JSON.stringify(val)}`,
     );
   }
   throw Error(
-    `Invalid value ${JSON.stringify(val)} for type ${JSON.stringify(typ)}`
+    `Invalid value ${JSON.stringify(val)} for type ${JSON.stringify(typ)}`,
   );
 }
 
@@ -232,41 +234,46 @@ function jsToJSONProps(typ: any): any {
 }
 
 function transform(val: any, typ: any, getProps: any, key: any = ''): any {
-  function transformPrimitive(typ: string, val: any): any {
-    if (typeof typ === typeof val) return val;
-    return invalidValue(typ, val, key);
+  function transformPrimitive(primitiveTyp: string, primitiveVal: any): any {
+    if (typeof primitiveTyp === typeof primitiveVal) {
+      return primitiveVal;
+    }
+    return invalidValue(primitiveTyp, primitiveVal, key);
   }
 
-  function transformUnion(typs: any[], val: any): any {
+  function transformUnion(typs: any[], unionVal: any): any {
     // val must validate against one typ in typs
     const l = typs.length;
     for (let i = 0; i < l; i++) {
-      const typ = typs[i];
       try {
-        return transform(val, typ, getProps);
+        return transform(unionVal, typs[i], getProps);
       } catch (_) {}
     }
-    return invalidValue(typs, val);
+    return invalidValue(typs, unionVal);
   }
 
-  function transformEnum(cases: string[], val: any): any {
-    if (cases.indexOf(val) !== -1) return val;
-    return invalidValue(cases, val);
+  function transformEnum(cases: string[], enumVal: any): any {
+    if (cases.indexOf(enumVal) !== -1) {
+      return enumVal;
+    }
+    return invalidValue(cases, enumVal);
   }
 
-  function transformArray(typ: any, val: any): any {
+  function transformArray(arrayTyp: any, arrayVal: any): any {
     // val must be an array with no invalid elements
-    if (!Array.isArray(val)) return invalidValue('array', val);
-    return val.map((el) => transform(el, typ, getProps));
+    if (!Array.isArray(arrayVal)) {
+      return invalidValue('array', arrayVal);
+    }
+    return arrayVal.map(el => transform(el, arrayTyp, getProps));
   }
 
-  function transformDate(val: any): any {
-    if (val === null) {
+  function transformDate(dateVal: any): any {
+    if (dateVal === null) {
       return null;
     }
-    const d = new Date(val);
+    const d = new Date(dateVal);
     if (isNaN(d.valueOf())) {
-      return invalidValue('Date', val);
+      return invalidValue('Date', dateVal);
     }
     return d;
   }
@@ -274,48 +281,70 @@ function transform(val: any, typ: any, getProps: any, key: any = ''): any {
   function transformObject(
     props: { [k: string]: any },
     additional: any,
-    val: any
+    objVal: any,
   ): any {
-    if (val === null || typeof val !== 'object' || Array.isArray(val)) {
-      return invalidValue('object', val);
+    if (
+      objVal === null ||
+      typeof objVal !== 'object' ||
+      Array.isArray(objVal)
+    ) {
+      return invalidValue('object', objVal);
     }
     const result: any = {};
-    Object.getOwnPropertyNames(props).forEach((key) => {
-      const prop = props[key];
-      const v = Object.prototype.hasOwnProperty.call(val, key)
-        ? val[key]
+    Object.getOwnPropertyNames(props).forEach(propKey => {
+      const prop = props[propKey];
+      const v = Object.prototype.hasOwnProperty.call(objVal, propKey)
+        ? objVal[propKey]
         : undefined;
       result[prop.key] = transform(v, prop.typ, getProps, prop.key);
     });
-    Object.getOwnPropertyNames(val).forEach((key) => {
-      if (!Object.prototype.hasOwnProperty.call(props, key)) {
-        result[key] = transform(val[key], additional, getProps, key);
+    Object.getOwnPropertyNames(objVal).forEach(valKey => {
+      if (!Object.prototype.hasOwnProperty.call(props, valKey)) {
+        result[valKey] = transform(
+          objVal[valKey],
+          additional,
+          getProps,
+          valKey,
+        );
       }
     });
     return result;
   }
 
-  if (typ === 'any') return val;
+  if (typ === 'any') {
+    return val;
+  }
   if (typ === null) {
-    if (val === null) return val;
+    if (val === null) {
+      return val;
+    }
     return invalidValue(typ, val);
   }
-  if (typ === false) return invalidValue(typ, val);
+  if (typ === false) {
+    return invalidValue(typ, val);
+  }
   while (typeof typ === 'object' && typ.ref !== undefined) {
     typ = typeMap[typ.ref];
   }
-  if (Array.isArray(typ)) return transformEnum(typ, val);
+  if (Array.isArray(typ)) {
+    return transformEnum(typ, val);
+  }
   if (typeof typ === 'object') {
+    // eslint-disable-next-line no-prototype-builtins
     return typ.hasOwnProperty('unionMembers')
       ? transformUnion(typ.unionMembers, val)
-      : typ.hasOwnProperty('arrayItems')
-      ? transformArray(typ.arrayItems, val)
-      : typ.hasOwnProperty('props')
-      ? transformObject(getProps(typ), typ.additional, val)
-      : invalidValue(typ, val);
+      : // eslint-disable-next-line no-prototype-builtins
+      typ.hasOwnProperty('arrayItems')
+        ? transformArray(typ.arrayItems, val)
+        : // eslint-disable-next-line no-prototype-builtins
+        typ.hasOwnProperty('props')
+          ? transformObject(getProps(typ), typ.additional, val)
+          : invalidValue(typ, val);
   }
   // Numbers can be parsed by Date but shouldn't be.
-  if (typ === Date && typeof val !== 'number') return transformDate(val);
+  if (typ === Date && typeof val !== 'number') {
+    return transformDate(val);
+  }
   return transformPrimitive(typ, val);
 }
 
@@ -327,23 +356,24 @@ function uncast<T>(val: T, typ: any): any {
   return transform(val, typ, jsToJSONProps);
 }
 
-function a(typ: any) {
+function a(typ: any): { arrayItems: any } {
   return { arrayItems: typ };
 }
 
-function u(...typs: any[]) {
+function u(...typs: any[]): { unionMembers: any[] } {
   return { unionMembers: typs };
 }
 
-function o(props: any[], additional: any) {
+function o(props: any[], additional: any): { props: any[]; additional: any } {
   return { props, additional };
 }
 
-function m(additional: any) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function m(additional: any): { props: []; additional: any } {
   return { props: [], additional };
 }
 
-function r(name: string) {
+function r(name: string): { ref: string } {
   return { ref: name };
 }
 
@@ -372,7 +402,7 @@ const typeMap: any = {
       },
       { json: 'editable', js: 'editable', typ: u(undefined, true) },
     ],
-    false
+    false,
   ),
   Account: o(
     [
@@ -383,7 +413,7 @@ const typeMap: any = {
       { json: 'link', js: 'link', typ: '' },
       { json: 'class', js: 'class', typ: u(undefined, '') },
     ],
-    false
+    false,
   ),
   OrderData: o(
     [
@@ -439,7 +469,7 @@ const typeMap: any = {
       { json: 'type', js: 'type', typ: '' },
       { json: 'closed_at', js: 'closed_at', typ: u(undefined, '') },
     ],
-    false
+    false,
   ),
   CurrentPrice: o(
     [
@@ -453,7 +483,7 @@ const typeMap: any = {
       },
       { json: 'quote_volume', js: 'quote_volume', typ: u(undefined, '') },
     ],
-    false
+    false,
   ),
   Leverage: o(
     [
@@ -461,14 +491,14 @@ const typeMap: any = {
       { json: 'type', js: 'type', typ: u(undefined, '') },
       { json: 'value', js: 'value', typ: u(undefined, '') },
     ],
-    false
+    false,
   ),
   Margin: o(
     [
       { json: 'amount', js: 'amount', typ: u(null, '') },
       { json: 'total', js: 'total', typ: u(null, '') },
     ],
-    false
+    false,
   ),
   Position: o(
     [
@@ -485,7 +515,7 @@ const typeMap: any = {
         typ: u(undefined, r('PositionConditional')),
       },
     ],
-    false
+    false,
   ),
   PositionConditional: o(
     [
@@ -494,21 +524,21 @@ const typeMap: any = {
       { json: 'order_type', js: 'order_type', typ: '' },
       { json: 'trailing', js: 'trailing', typ: r('Trailing') },
     ],
-    false
+    false,
   ),
   PurplePrice: o(
     [
       { json: 'value', js: 'value', typ: '' },
       { json: 'type', js: 'type', typ: '' },
     ],
-    false
+    false,
   ),
   Trailing: o(
     [
       { json: 'enabled', js: 'enabled', typ: true },
       { json: 'percent', js: 'percent', typ: null },
     ],
-    false
+    false,
   ),
   PositionPrice: o(
     [
@@ -520,7 +550,7 @@ const typeMap: any = {
       },
       { json: 'editable', js: 'editable', typ: true },
     ],
-    false
+    false,
   ),
   PositionStatus: o(
     [
@@ -528,7 +558,7 @@ const typeMap: any = {
       { json: 'title', js: 'title', typ: '' },
       { json: 'error', js: 'error', typ: u(undefined, '') },
     ],
-    false
+    false,
   ),
   Total: o([{ json: 'value', js: 'value', typ: u(null, '') }], false),
   Units: o(
@@ -536,7 +566,7 @@ const typeMap: any = {
       { json: 'value', js: 'value', typ: '' },
       { json: 'editable', js: 'editable', typ: u(undefined, true) },
     ],
-    false
+    false,
   ),
   Profit: o(
     [
@@ -545,7 +575,7 @@ const typeMap: any = {
       { json: 'percent', js: 'percent', typ: u(0, null, '') },
       { json: 'roe', js: 'roe', typ: u(undefined, u(null, '')) },
     ],
-    false
+    false,
   ),
   StopLoss: o(
     [
@@ -561,14 +591,14 @@ const typeMap: any = {
       { json: 'timeout', js: 'timeout', typ: u(undefined, r('Timeout')) },
       { json: 'status', js: 'status', typ: u(undefined, r('StopLossStatus')) },
     ],
-    false
+    false,
   ),
   StopLossConditional: o(
     [
       { json: 'price', js: 'price', typ: r('StepPrice') },
       { json: 'trailing', js: 'trailing', typ: r('Trailing') },
     ],
-    false
+    false,
   ),
   StepPrice: o(
     [
@@ -576,28 +606,28 @@ const typeMap: any = {
       { json: 'type', js: 'type', typ: '' },
       { json: 'percent', js: 'percent', typ: null },
     ],
-    false
+    false,
   ),
   StopLossStatus: o(
     [
       { json: 'type', js: 'type', typ: '' },
       { json: 'title', js: 'title', typ: '' },
     ],
-    false
+    false,
   ),
   Timeout: o(
     [
       { json: 'enabled', js: 'enabled', typ: true },
       { json: 'value', js: 'value', typ: u(0, null) },
     ],
-    false
+    false,
   ),
   TakeProfit: o(
     [
       { json: 'enabled', js: 'enabled', typ: true },
       { json: 'steps', js: 'steps', typ: a(r('Step')) },
     ],
-    false
+    false,
   ),
   Step: o(
     [
@@ -613,13 +643,13 @@ const typeMap: any = {
       { json: 'data', js: 'data', typ: r('StepData') },
       { json: 'position', js: 'position', typ: 0 },
     ],
-    false
+    false,
   ),
   StepData: o(
     [
       { json: 'cancelable', js: 'cancelable', typ: true },
       { json: 'panic_sell_available', js: 'panic_sell_available', typ: true },
     ],
-    false
+    false,
   ),
 };

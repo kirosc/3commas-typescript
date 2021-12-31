@@ -1,5 +1,3 @@
-
-
 const { Linter } = require('eslint');
 
 const rules = {
