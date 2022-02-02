@@ -50,9 +50,7 @@ export class API {
     this.axios.interceptors.request.use(
       (config) => {
         let data = {
-          ...config.data,
-          api_key: this.KEY,
-          secret: this.SECRETS,
+          ...config.data
         };
         let payload = JSON.stringify(data);
 
