@@ -49,14 +49,11 @@ export class API {
     });
     this.axios.interceptors.request.use(
       (config) => {
-        let data = {
-          ...config.data
-        };
-        let payload = JSON.stringify(data);
+        let payload = JSON.stringify(config.data);
 
         if (config.method === 'get') {
           payload = qs.stringify(config.params);
-          data = null;
+          config.data = null;
         }
 
         const relativeUrl = config.url!.replace(config.baseURL!, '');
@@ -65,7 +62,6 @@ export class API {
           : '';
         const newConfig = {
           ...config,
-          data,
           headers: {
             ...config.headers,
             signature,
