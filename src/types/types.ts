@@ -35,6 +35,13 @@ export interface BotsStatsParams {
   bot_id?: number;
 }
 
+export interface BotOptionalParams {
+  /**
+   * Include bot events on the bot object, defaults `false`.
+   */
+  include_events: boolean;
+}
+
 export interface CurrencyParams {
   market_code?: string;
   pair: string;

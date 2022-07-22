@@ -3,6 +3,7 @@ import qs from 'qs';
 import WebSocket from 'ws';
 import {
   APIOptions,
+  BotOptionalParams,
   BotsParams,
   BotsStatsParams,
   Channel,
@@ -336,8 +337,8 @@ export class API {
     return await this.request('GET', 1, '/bots/stats', params);
   }
 
-  async getBot(id: number) {
-    return await this.request('GET', 1, `/bots/${id}/show`);
+  async getBot(id: number, options?: BotOptionalParams) {
+    return await this.request('GET', 1, `/bots/${id}/show`, options);
   }
 
   async getDeals(
